@@ -75,8 +75,8 @@ dependencies:
   # ════════════════════════════════════════════════════════════
   # STATE MANAGEMENT
   # ════════════════════════════════════════════════════════════
-  flutter_bloc: ^8.1.6              # Bloc state management
-  bloc: ^8.1.4                      # Bloc core
+  flutter_bloc: ^9.1.1              # Bloc state management
+  bloc: ^9.2.0                      # Bloc core
   equatable: ^2.0.7                 # Value equality
 
   # ════════════════════════════════════════════════════════════
@@ -158,7 +158,7 @@ dev_dependencies:
   # TESTING & TOOLS
   # ════════════════════════════════════════════════════════════
   mockito: ^5.6.3
-  bloc_test: ^9.1.7
+  bloc_test: ^10.0.0
   mocktail: ^1.0.3
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.7
