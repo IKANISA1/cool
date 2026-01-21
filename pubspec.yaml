@@ -102,7 +102,7 @@ dependencies:
   # LOCAL STORAGE
   # ════════════════════════════════════════════════════════════
   shared_preferences: ^2.3.3         # Simple key-value
-  flutter_secure_storage: ^9.2.3    # Secure storage for tokens
+  flutter_secure_storage: ^10.0.0    # Secure storage for tokens
   hive_flutter: ^1.1.0               # Fast NoSQL
 
   # ════════════════════════════════════════════════════════════
