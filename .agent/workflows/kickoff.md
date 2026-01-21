@@ -2,117 +2,184 @@
 description: Get oriented with the RideLink project - architecture, features, current state, and next steps
 ---
 
-# /kickoff — RideLink Project Overview & Orientation
+# /kickoff — Project Orientation Workflow
 
-Use this workflow to quickly understand the RideLink mobility app and get up to speed.
+Use this workflow at the start of a new session to get oriented with the RideLink mobility app.
 
-## 1. PROJECT IDENTITY
+## 1. Quick Project Summary
 
-| Field | Value |
-|-------|-------|
-| **App Name** | RideLink |
-| **Package** | `com.ridelink` |
-| **Type** | AI-First Mobility PWA (mobile-first) |
-| **Target** | Sub-Saharan Africa |
-| **Stack** | Flutter + Supabase + Gemini AI |
+**RideLink** is an AI-first mobility platform for Sub-Saharan Africa, built as a Flutter PWA with Supabase backend.
 
-## 2. ARCHITECTURE OVERVIEW
+### Core Stack
+- **Frontend**: Flutter 3.38+ with Bloc state management, go_router navigation
+- **Backend**: Supabase (PostgreSQL + PostGIS + Realtime + Edge Functions)
+- **AI**: Google Gemini for natural language trip scheduling
+- **Auth**: Supabase anonymous auth (WhatsApp OTP deprecated)
 
-```
-lib/
-├── core/           # Config, router, theme, utils, DI
-├── features/       # Feature modules (auth, discovery, scheduling, etc.)
-├── shared/         # Shared widgets, models, services
-├── l10n/           # Localization
-├── app.dart        # App widget
-└── main.dart       # Entry point
-
-supabase/
-├── functions/      # Edge Functions (OTP, AI parsing, etc.)
-├── migrations/     # Schema migrations
-└── schema.sql      # Full schema snapshot
-```
-
-## 3. KEY FEATURE MODULES
-
-| Module | Purpose |
-|--------|---------|
-| `auth` | WhatsApp OTP authentication |
-| `discovery` | Nearby driver/passenger discovery with presence |
-| `requests` | 60-second ride request handshake |
-| `scheduling` | AI-powered trip scheduling (NL/voice) |
-| `ai_assistant` | Gemini AI integration |
-| `ratings` | Driver/passenger ratings & stats |
-| `payment` | MTN MoMo, Paystack integration |
-| `utilities` | QR scanner/generator, NFC tools |
-| `profile` | User profiles with reviews |
-| `notifications` | Push notifications |
-| `trips` | Trip history |
-
-## 4. CHECK PROJECT STATE
-
-Run these commands to verify health:
-
-```bash
-# Check Flutter environment
-flutter doctor
-
-# Analyze code for issues
-flutter analyze
-
-# Run tests
-flutter test
-
-# Run the app on connected device/emulator
-flutter run
-```
-
-## 5. ENVIRONMENT SETUP
-
-Ensure `.env` exists with valid keys (copy from `.env.example`):
-
-- `SUPABASE_URL` / `SUPABASE_ANON_KEY`
-- `GEMINI_API_KEY`
-- `GOOGLE_MAPS_API_KEY` (optional)
-- `MTN_MOMO_*` keys (optional)
-
-## 6. QUICK REFERENCE: KEY FILES
-
-| Purpose | Path |
-|---------|------|
-| Router | `lib/core/router/app_router.dart` |
-| DI Setup | `lib/core/di/injection.dart` |
-| Theme | `lib/core/theme/app_theme.dart` |
-| Auth Bloc | `lib/features/auth/presentation/bloc/` |
-| Supabase Schema | `supabase/schema.sql` |
-| Edge Functions | `supabase/functions/` |
-
-## 7. NEXT STEPS
-
-Depending on your goal, use one of these workflows:
-
-| Goal | Workflow |
-|------|----------|
-| Audit codebase | `/fullstack-audit` |
-| Check production readiness | `/go-live-readiness` |
-| Build a new feature | `/feature` |
-| Fix a bug | `/bugfix` |
-| Deploy readiness | `/deploy-check` |
-| Run fullstack tests | `/browser-fullstack-test` |
-| Review security | `/security-audit` |
-
-## 8. AVAILABLE SKILLS
-
-Skills extend agent capabilities for specialized tasks:
-
-- `whatsapp-auth-otp` — WhatsApp OTP login/auth
-- `presence-discovery` — Online/offline presence + nearby discovery
-- `request-handshake-60s` — 1-minute expiring ride requests
-- `ai-schedule-nl-voice` — NL/voice scheduling → TripIntent JSON
-- `schedule-trip-structured` — Structured trip form scheduling
-- `utilities-qr-nfc-momo` — QR/NFC/MoMo utilities
-- `mobility-core-backend` — Core backend data model & APIs
+### Key Features
+1. **Discovery**: Find nearby drivers/passengers with real-time presence
+2. **60-second Requests**: Send ride requests that auto-expire
+3. **AI Scheduling**: Voice/text trip planning with Gemini
+4. **Utilities**: QR scan/generate, NFC read/write (Android), NFC read (iOS)
+5. **Payments**: MTN MoMo integration via Paystack
 
 ---
 
-**TL;DR:** RideLink is a mature Flutter + Supabase mobility app. Run `/fullstack-audit` for a deep review or `/go-live-readiness` to check production status.
+## 2. Project Structure
+
+```
+mobility_app/
+├── lib/
+│   ├── core/           # DI, router, theme, widgets, services
+│   ├── features/       # Feature modules (auth, home, discovery, etc.)
+│   ├── shared/         # Shared services (Gemini, TTS, etc.)
+│   └── l10n/           # Localizations (EN, FR, RW)
+├── android/            # Android config (AGP 8.x, Kotlin DSL)
+├── ios/                # iOS config (Fastlane, CocoaPods)
+├── supabase/
+│   ├── migrations/     # Database migrations
+│   ├── functions/      # Edge Functions (parse-trip-request, etc.)
+│   └── schema.sql      # Full schema reference
+├── .github/workflows/  # CI/CD pipelines
+└── docs/               # PRD, data model, UX flows
+```
+
+---
+
+## 3. Configuration Checklist
+
+// turbo
+Run these checks at session start:
+
+```bash
+# Check Flutter version
+flutter --version
+
+# Verify no analysis issues
+cd /Users/jeanbosco/Cool/mobility_app && flutter analyze
+
+# Check dependencies are up to date
+flutter pub get
+```
+
+---
+
+## 4. Environment Setup
+
+Ensure `.env` file exists with:
+```env
+SUPABASE_URL=https://xxx.supabase.co
+SUPABASE_ANON_KEY=eyJ...
+GEMINI_API_KEY=AI...
+GOOGLE_MAPS_API_KEY=AI... (optional)
+```
+
+---
+
+## 5. Common Commands
+
+### Development
+```bash
+# Run on device/emulator
+flutter run
+
+# Run with verbose logging
+flutter run --verbose
+
+# Generate code (after model changes)
+dart run build_runner build --delete-conflicting-outputs
+```
+
+### Testing
+```bash
+# Unit tests
+flutter test
+
+# Integration tests
+flutter test integration_test
+```
+
+### Building
+```bash
+# Android APK
+flutter build apk --release --split-per-abi
+
+# Android App Bundle (for Play Store)
+flutter build appbundle --release
+
+# iOS (no codesign for CI)
+flutter build ios --release --no-codesign
+```
+
+---
+
+## 6. Key Files to Know
+
+| File | Purpose |
+|------|---------|
+| `lib/core/router/app_router.dart` | Route definitions and auth guards |
+| `lib/core/di/injection.dart` | Dependency injection setup |
+| `lib/features/auth/presentation/bloc/auth_bloc.dart` | Auth state management |
+| `supabase/schema.sql` | Full database schema |
+| `DEPLOYMENT.md` | Deployment runbook |
+| `pubspec.yaml` | Dependencies and version |
+
+---
+
+## 7. Current State Summary
+
+### What's Working ✅
+- Anonymous authentication via Supabase
+- Profile setup flow (driver/passenger)
+- Discovery of nearby users (PostGIS)
+- 60-second ride request handshake
+- AI trip parsing via Edge Function
+- Voice input for scheduling
+- QR and NFC utilities
+- CI/CD pipeline (GitHub Actions)
+
+### What Needs Attention ⚠️
+- Enable `pg_cron` for request expiration
+- Production signing setup (Android/iOS)
+- App Store/Play Store submission
+- Firebase App Distribution for testing
+
+---
+
+## 8. Next Steps
+
+Based on common session goals:
+
+1. **Building Features**: Use `/feature` workflow
+2. **Fixing Bugs**: Use `/bugfix` workflow  
+3. **Deployment**: Use `/deploy-check` then store-specific workflows
+4. **Testing**: Use `/e2e-smoke` or `/browser-fullstack-test`
+5. **Performance**: Use `/perf-budget` workflow
+
+---
+
+## 9. Quick Diagnostics
+
+// turbo
+```bash
+# Check for outdated packages
+flutter pub outdated
+
+# List connected devices
+flutter devices
+
+# Check Supabase connection
+cd /Users/jeanbosco/Cool/mobility_app && cat .env | head -2
+```
+
+---
+
+## 10. Related Workflows
+
+- `/feature` — Build new features end-to-end
+- `/bugfix` — Debug and fix issues
+- `/deploy-check` — Pre-deployment checklist
+- `/firebase-apk` — Firebase App Distribution
+- `/playstore-deployment` — Play Store submission
+- `/appstore-deployment` — App Store submission
+- `/fullstack-audit` — Deep system review

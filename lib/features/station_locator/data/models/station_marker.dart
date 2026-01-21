@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart'
-    as cluster_pkg;
 
 import '../../domain/entities/battery_swap_station.dart';
 import '../../domain/entities/ev_charging_station.dart';
 
-/// Marker model for map clustering
+/// Marker model for map display
 ///
-/// Implements [ClusterItem] for use with google_maps_cluster_manager.
 /// Represents both battery swap and EV charging stations.
-class StationMarker with cluster_pkg.ClusterItem {
+class StationMarker {
   /// Unique station identifier
   final String id;
 
@@ -54,8 +51,7 @@ class StationMarker with cluster_pkg.ClusterItem {
     required this.details,
   });
 
-  /// Required override for ClusterItem - returns position
-  @override
+  /// For compatibility - returns position
   LatLng get location => position;
 
   /// Factory constructor from BatterySwapStation entity

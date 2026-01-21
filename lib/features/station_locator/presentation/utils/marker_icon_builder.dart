@@ -90,7 +90,7 @@ class MarkerIconBuilder {
     final image = await picture.toImage(size, size);
     final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
 
-    return BitmapDescriptor.bytes(bytes!.buffer.asUint8List());
+    return BitmapDescriptor.fromBytes(bytes!.buffer.asUint8List());
   }
 
   /// Create a cluster marker icon showing the count of stations
@@ -155,7 +155,7 @@ class MarkerIconBuilder {
     final image = await picture.toImage(size, size);
     final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
 
-    return BitmapDescriptor.bytes(bytes!.buffer.asUint8List());
+    return BitmapDescriptor.fromBytes(bytes!.buffer.asUint8List());
   }
 }
 

@@ -4,23 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart'
-    as cluster_pkg;
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/models/station_marker.dart';
 import '../bloc/station_locator_bloc.dart';
 import '../bloc/station_locator_event.dart';
 import '../bloc/station_locator_state.dart';
-import '../utils/marker_icon_builder.dart';
 import '../utils/map_styles.dart';
 import '../widgets/station_bottom_sheet.dart';
 
-/// Google Maps view for displaying stations with clustering
+/// Google Maps view for displaying stations
 ///
 /// Features:
 /// - Custom marker icons based on availability
-/// - Marker clustering for performance
 /// - Bottom sheet for station quick info
 /// - Navigation integration with Google Maps
 /// - Dark/light mode support
@@ -38,7 +34,6 @@ class StationMapView extends StatefulWidget {
 }
 
 class _StationMapViewState extends State<StationMapView> {
-  late cluster_pkg.ClusterManager<StationMarker> _clusterManager;
   GoogleMapController? _mapController;
 
   Set<Marker> _markers = {};
@@ -47,30 +42,30 @@ class _StationMapViewState extends State<StationMapView> {
   // Default camera position (Kigali, Rwanda)
   static const LatLng _defaultPosition = LatLng(-1.9441, 30.0619);
 
-  // Cache for marker icons
-  final MarkerCacheManager _markerCache = MarkerCacheManager();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _clusterManager = cluster_pkg.ClusterManager<StationMarker>(
-      [],
-      _updateMarkers,
-      markerBuilder: _markerBuilder,
-      levels: const [1, 4.25, 6.75, 8.25, 11.5, 14.5, 16.0, 16.5, 20.0],
-      extraPercent: 0.25,
-    );
-  }
-
   @override
   void dispose() {
     _mapController?.dispose();
     super.dispose();
   }
 
-  /// Update markers when cluster changes
-  void _updateMarkers(Set<Marker> markers) {
+  /// Build markers from station list
+  Future<void> _buildMarkers(List<StationMarker> stations) async {
+    final Set<Marker> markers = {};
+
+    for (final station in stations) {
+      final marker = Marker(
+        markerId: MarkerId(station.id),
+        position: station.position,
+        icon: await _getMarkerIcon(station),
+        onTap: () => _onStationTap(station),
+        infoWindow: InfoWindow(
+          title: station.name,
+          snippet: station.brand ?? station.network ?? '',
+        ),
+      );
+      markers.add(marker);
+    }
+
     if (mounted) {
       setState(() {
         _markers = markers;
@@ -78,61 +73,23 @@ class _StationMapViewState extends State<StationMapView> {
     }
   }
 
-  /// Build custom markers for clusters and individual stations
-  Future<Marker> _markerBuilder(dynamic clusterData) async {
-    final cluster = clusterData as cluster_pkg.Cluster<StationMarker>;
-    final markerId = MarkerId(cluster.getId());
-
-    if (cluster.isMultiple) {
-      // Cluster marker
-      final icon = await _markerCache.getOrCreate(
-        'cluster_${widget.stationType}_${cluster.count}',
-        () => MarkerIconBuilder.createClusterIcon(
-          clusterSize: cluster.count,
-          stationType: widget.stationType,
-        ),
-      );
-
-      return Marker(
-        markerId: markerId,
-        position: cluster.location,
-        icon: icon,
-        onTap: () => _onClusterTap(cluster),
-      );
+  /// Get marker icon based on station type and availability
+  Future<BitmapDescriptor> _getMarkerIcon(StationMarker station) async {
+    // Use colored hue markers based on availability
+    double hue;
+    if (!station.isOperational) {
+      hue = BitmapDescriptor.hueRose;
+    } else if (station.availabilityPercent == null) {
+      hue = BitmapDescriptor.hueYellow;
+    } else if (station.availabilityPercent! >= 75) {
+      hue = BitmapDescriptor.hueGreen;
+    } else if (station.availabilityPercent! >= 50) {
+      hue = BitmapDescriptor.hueOrange;
     } else {
-      // Single station marker
-      final station = cluster.items.first;
-      final cacheKey =
-          '${station.stationType}_${station.isOperational}_${station.availabilityPercent?.toInt() ?? 0}';
-
-      final icon = await _markerCache.getOrCreate(
-        cacheKey,
-        () => MarkerIconBuilder.createCustomMarkerIcon(
-          stationType: station.stationType,
-          isOperational: station.isOperational,
-          availabilityPercent: station.availabilityPercent ?? 0,
-        ),
-      );
-
-      return Marker(
-        markerId: markerId,
-        position: station.position,
-        icon: icon,
-        onTap: () => _onStationTap(station),
-      );
+      hue = BitmapDescriptor.hueRed;
     }
-  }
 
-  /// Handle cluster tap - zoom in to expand
-  void _onClusterTap(cluster_pkg.Cluster<StationMarker> cluster) {
-    HapticFeedback.lightImpact();
-
-    _mapController?.animateCamera(
-      CameraUpdate.newLatLngZoom(
-        cluster.location,
-        (_mapController!.getZoomLevel() as double? ?? 12) + 2,
-      ),
-    );
+    return BitmapDescriptor.defaultMarkerWithHue(hue);
   }
 
   /// Handle station tap - show bottom sheet
@@ -248,6 +205,7 @@ class _StationMapViewState extends State<StationMapView> {
   void _setMapStyle(GoogleMapController controller, Brightness brightness) {
     final style =
         brightness == Brightness.dark ? MapStyles.darkMode : MapStyles.lightMode;
+    // Note: setMapStyle is deprecated but still works for now
     controller.setMapStyle(style);
   }
 
@@ -263,12 +221,12 @@ class _StationMapViewState extends State<StationMapView> {
             _stationMarkers = state.stations;
           });
 
-          // Update cluster manager
-          _clusterManager.setItems(state.stations);
+          // Build markers
+          _buildMarkers(state.stations);
 
           // Fit bounds to show all stations
           if (state.stations.isNotEmpty && _mapController != null) {
-            // Delay to allow cluster manager to update
+            // Delay to allow markers to build
             Future.delayed(const Duration(milliseconds: 300), () {
               _fitBoundsToMarkers(state.stations);
             });
@@ -287,14 +245,7 @@ class _StationMapViewState extends State<StationMapView> {
               markers: _markers,
               onMapCreated: (controller) {
                 _mapController = controller;
-                _clusterManager.setMapId(controller.mapId);
                 _setMapStyle(controller, brightness);
-              },
-              onCameraMove: (position) {
-                _clusterManager.onCameraMove(position);
-              },
-              onCameraIdle: () {
-                _clusterManager.updateMap();
               },
               myLocationEnabled: true,
               myLocationButtonEnabled: false, // Custom button below
@@ -316,14 +267,14 @@ class _StationMapViewState extends State<StationMapView> {
                       padding: const EdgeInsets.all(16),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(
+                        children: const [
+                          SizedBox(
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           ),
-                          const SizedBox(width: 12),
-                          const Text('Loading stations...'),
+                          SizedBox(width: 12),
+                          Text('Loading stations...'),
                         ],
                       ),
                     ),
