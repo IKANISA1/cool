@@ -56,7 +56,7 @@ dependencies:
   # ════════════════════════════════════════════════════════════
   # FORMS & VALIDATION
   # ════════════════════════════════════════════════════════════
-  flutter_form_builder: ^9.4.2       # Form building
+  flutter_form_builder: ^10.2.0       # Form building
   form_builder_validators: ^11.0.0   # Validators
 
   # ════════════════════════════════════════════════════════════
@@ -102,7 +102,7 @@ dependencies:
   # LOCAL STORAGE
   # ════════════════════════════════════════════════════════════
   shared_preferences: ^2.3.3         # Simple key-value
-  flutter_secure_storage: ^9.2.3    # Secure storage for tokens
+  flutter_secure_storage: ^10.0.0    # Secure storage for tokens
   hive_flutter: ^1.1.0               # Fast NoSQL
 
   # ════════════════════════════════════════════════════════════
@@ -110,7 +110,7 @@ dependencies:
   # ════════════════════════════════════════════════════════════
   cached_network_image: ^3.4.1       # Image caching
   flutter_svg: ^2.0.10+1             # SVG support
-  intl: ^0.19.0                      # Internationalization
+  intl: ^0.20.2                      # Internationalization
   timeago: ^3.7.0                    # Relative time
   flutter_datetime_picker: ^1.5.1    # Date/time picker
   country_code_picker: ^3.0.0        # Country picker
