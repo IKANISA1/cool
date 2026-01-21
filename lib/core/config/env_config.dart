@@ -1,4 +1,5 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:ridelink/core/error/exceptions.dart';
 
 /// Environment configuration loader
 /// 
@@ -22,10 +23,18 @@ class EnvConfig {
       'GEMINI_API_KEY',
     ];
 
+    final missingKeys = <String>[];
     for (final key in requiredKeys) {
       if (dotenv.env[key] == null || dotenv.env[key]!.isEmpty) {
-        throw Exception('Missing required environment variable: $key');
+        missingKeys.add(key);
       }
+    }
+
+    if (missingKeys.isNotEmpty) {
+      throw ConfigurationException(
+        message: 'Missing required environment variables',
+        missingKeys: missingKeys,
+      );
     }
   }
 

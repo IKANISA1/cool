@@ -38,7 +38,7 @@ class MarkerIconBuilder {
     }
 
     // Draw shadow circle
-    paint.color = Colors.black.withOpacity(0.2);
+    paint.color = Colors.black.withValues(alpha: 0.2);
     canvas.drawCircle(
       Offset(size / 2, size / 2 + 4),
       size / 2.5,
@@ -90,7 +90,7 @@ class MarkerIconBuilder {
     final image = await picture.toImage(size, size);
     final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
 
-    return BitmapDescriptor.fromBytes(bytes!.buffer.asUint8List());
+    return BitmapDescriptor.bytes(bytes!.buffer.asUint8List());
   }
 
   /// Create a cluster marker icon showing the count of stations
@@ -108,7 +108,7 @@ class MarkerIconBuilder {
         stationType == 'battery_swap' ? Colors.blue : Colors.green;
 
     // Draw shadow
-    paint.color = Colors.black.withOpacity(0.3);
+    paint.color = Colors.black.withValues(alpha: 0.3);
     canvas.drawCircle(
       Offset(size / 2, size / 2 + 4),
       size / 2.2,
@@ -155,7 +155,7 @@ class MarkerIconBuilder {
     final image = await picture.toImage(size, size);
     final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
 
-    return BitmapDescriptor.fromBytes(bytes!.buffer.asUint8List());
+    return BitmapDescriptor.bytes(bytes!.buffer.asUint8List());
   }
 }
 
