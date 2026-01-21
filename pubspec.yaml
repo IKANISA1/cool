@@ -56,7 +56,7 @@ dependencies:
   # ════════════════════════════════════════════════════════════
   # FORMS & VALIDATION
   # ════════════════════════════════════════════════════════════
-  flutter_form_builder: ^9.4.2       # Form building
+  flutter_form_builder: ^10.2.0       # Form building
   form_builder_validators: ^11.0.0   # Validators
 
   # ════════════════════════════════════════════════════════════
@@ -70,7 +70,7 @@ dependencies:
   nfc_manager: ^4.1.1                # NFC read/write (Kotlin 2.x compatible)
   mobile_scanner: ^5.0.0             # QR scanning
   qr_flutter: ^4.1.0                 # QR generation
-  vibration: ^2.0.0                  # Haptic feedback
+  vibration: ^3.1.5                  # Haptic feedback
 
   # ════════════════════════════════════════════════════════════
   # STATE MANAGEMENT
@@ -110,7 +110,7 @@ dependencies:
   # ════════════════════════════════════════════════════════════
   cached_network_image: ^3.4.1       # Image caching
   flutter_svg: ^2.0.10+1             # SVG support
-  intl: ^0.19.0                      # Internationalization
+  intl: ^0.20.2                      # Internationalization
   timeago: ^3.7.0                    # Relative time
   flutter_datetime_picker: ^1.5.1    # Date/time picker
   country_code_picker: ^3.0.0        # Country picker
@@ -120,7 +120,7 @@ dependencies:
   # ════════════════════════════════════════════════════════════
   # DEVICE INFO & UTILS
   # ════════════════════════════════════════════════════════════
-  device_info_plus: ^10.1.2          # Device information
+  device_info_plus: ^12.3.0          # Device information
   package_info_plus: ^8.1.1          # Package info
   flutter_dotenv: ^5.2.1             # Environment variables
   uuid: ^4.5.1                       # UUID generation
