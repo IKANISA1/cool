@@ -31,7 +31,7 @@ dependencies:
   google_maps_flutter: ^2.10.0       # Google Maps
   # google_maps_cluster_manager removed due to naming conflict with google_maps_flutter 2.9+
   flutter_cache_manager: ^3.3.1      # Map icon caching
-  flutter_map: ^7.0.2                # Alternative maps
+  flutter_map: ^8.2.2                # Alternative maps
   latlong2: ^0.9.1                   # LatLng handling
 
   # ════════════════════════════════════════════════════════════
@@ -48,7 +48,7 @@ dependencies:
   rive: ^0.13.18                     # Rive interactive animations
   flutter_animate: ^4.5.0            # Easy animations
   shimmer: ^3.0.0                    # Shimmer loading effects
-  flutter_slidable: ^3.1.1           # Swipe actions
+  flutter_slidable: ^4.0.3           # Swipe actions
   badges: ^3.1.2                     # Notification badges
   flutter_spinkit: ^5.2.1            # Loading spinners
   pull_to_refresh: ^2.0.0            # Pull refresh
@@ -102,7 +102,7 @@ dependencies:
   # LOCAL STORAGE
   # ════════════════════════════════════════════════════════════
   shared_preferences: ^2.3.3         # Simple key-value
-  flutter_secure_storage: ^9.2.3    # Secure storage for tokens
+  flutter_secure_storage: ^10.0.0    # Secure storage for tokens
   hive_flutter: ^1.1.0               # Fast NoSQL
 
   # ════════════════════════════════════════════════════════════
@@ -122,7 +122,7 @@ dependencies:
   # ════════════════════════════════════════════════════════════
   device_info_plus: ^10.1.2          # Device information
   package_info_plus: ^8.1.1          # Package info
-  flutter_dotenv: ^5.2.1             # Environment variables
+  flutter_dotenv: ^6.0.0             # Environment variables
   uuid: ^4.5.1                       # UUID generation
   logger: ^2.5.0                     # Logging
 
@@ -147,18 +147,20 @@ dev_dependencies:
   # ════════════════════════════════════════════════════════════
   # CODE GENERATION
   # ════════════════════════════════════════════════════════════
-  build_runner: ^2.4.13
-  freezed: ^2.5.0
-  freezed_annotation: ^2.4.0
-  json_serializable: ^6.8.0
-  injectable_generator: ^2.6.0
-  retrofit_generator: ^8.1.0        # Downgrading generator to match typical 4.x usage or avoiding conflict
+  build_runner: ^2.10.5
+  freezed: ^3.2.3
+  freezed_annotation: ^3.1.0
+  json_serializable: ^6.11.2
+  injectable_generator: ^2.9.1
+  retrofit_generator: ^10.2.1        # Downgrading generator to match typical 4.x usage or avoiding conflict
 
   # ════════════════════════════════════════════════════════════
   # TESTING & TOOLS
   # ════════════════════════════════════════════════════════════
   mockito: ^5.4.4
   bloc_test: ^10.0.0
+  mockito: ^5.6.3
+  bloc_test: ^9.1.7
   mocktail: ^1.0.3
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.7
