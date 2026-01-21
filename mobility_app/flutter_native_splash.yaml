@@ -1,0 +1,25 @@
+# Flutter Native Splash Configuration
+# Run: dart run flutter_native_splash:create
+
+flutter_native_splash:
+  color: "#1A237E"
+  
+  # Optional: image for splash
+  # image: assets/icons/splash_logo.png
+  
+  # Branding image shown at bottom of splash
+  # branding: assets/icons/branding.png
+  
+  # Android 12+ specific
+  android_12:
+    color: "#1A237E"
+    # icon_background_color: "#1A237E"
+    # image: assets/icons/splash_android12.png
+  
+  # Platform toggles
+  android: true
+  ios: true
+  web: true
+  
+  # Keep splash until remove() is called
+  # fullscreen: true

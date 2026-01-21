@@ -1,0 +1,17 @@
+# ═══════════════════════════════════════════════════════════
+# ANDROID RELEASE SIGNING CONFIGURATION
+# ═══════════════════════════════════════════════════════════
+# 
+# ⚠️ NEVER COMMIT THIS FILE TO VERSION CONTROL ⚠️
+#
+# To generate a new keystore:
+#   keytool -genkey -v -keystore keystore.jks -keyalg RSA \
+#     -keysize 2048 -validity 10000 -alias ridelink
+#
+# Store passwords securely (password manager, secrets vault)
+# ═══════════════════════════════════════════════════════════
+
+storePassword=YOUR_STORE_PASSWORD
+keyPassword=YOUR_KEY_PASSWORD
+keyAlias=ridelink
+storeFile=keystore.jks

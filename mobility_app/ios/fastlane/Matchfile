@@ -1,0 +1,37 @@
+# frozen_string_literal: true
+
+# Matchfile - Fastlane Match Configuration
+# Manages iOS code signing certificates and provisioning profiles
+#
+# Usage:
+#   fastlane match development  - Sync development certificates
+#   fastlane match appstore     - Sync App Store certificates
+#   fastlane match nuke         - Revoke all certificates (use with caution!)
+
+# Git repository to store certificates (REQUIRED: Create a private repo)
+# Example: git@github.com:yourorg/ios-certificates.git
+git_url(ENV["MATCH_GIT_URL"] || "git@github.com:YOURORG/certificates.git")
+
+# Storage mode (git is recommended for teams)
+storage_mode("git")
+
+# App identifier(s) - matches the bundle ID in Xcode
+app_identifier(["com.easymo.mobilityApp"])
+
+# Your Apple Developer email
+username(ENV["APPLE_ID"] || "your-apple-id@example.com")
+
+# Apple Developer Team ID (find at developer.apple.com → Membership)
+team_id(ENV["APPLE_TEAM_ID"] || "XXXXXXXXXX")
+
+# Clone the repo via SSH (recommended for CI/CD)
+clone_branch_directly(true)
+
+# Certificate types to manage
+# type("appstore")  # Set per-lane in Fastfile
+
+# Optional: Shallow clone for faster CI builds
+shallow_clone(true)
+
+# Optional: Force readonly mode in CI to prevent accidental overwrites
+readonly(ENV["CI"] == "true")

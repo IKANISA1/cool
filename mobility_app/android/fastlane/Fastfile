@@ -1,0 +1,193 @@
+# ═══════════════════════════════════════════════════════════
+# FASTLANE FASTFILE - Android Deployment Lanes
+# ═══════════════════════════════════════════════════════════
+#
+# Available lanes:
+#   fastlane build         - Build release AAB
+#   fastlane validate      - Validate AAB file format
+#   fastlane internal      - Deploy to Internal Testing track
+#   fastlane beta          - Deploy to Closed Beta track
+#   fastlane production    - Deploy to Production track (with rollout %)
+#
+# Requirements:
+#   - Play Store service account JSON key
+#   - Release keystore configured in key.properties
+#   - Flutter SDK available in PATH
+# ═══════════════════════════════════════════════════════════
+
+default_platform(:android)
+
+# ═══════════════════════════════════════════════════════════
+# CONSTANTS
+# ═══════════════════════════════════════════════════════════
+AAB_PATH = "../build/app/outputs/bundle/release/app-release.aab"
+APK_PATH = "../build/app/outputs/flutter-apk/app-release.apk"
+PACKAGE_NAME = "com.easymo.mobility_app"
+
+platform :android do
+
+  # ═════════════════════════════════════════════════════════
+  # BUILD LANE
+  # ═════════════════════════════════════════════════════════
+  desc "Build release App Bundle"
+  lane :build do
+    # Clean and get dependencies
+    sh("cd ../.. && flutter clean")
+    sh("cd ../.. && flutter pub get")
+    
+    # Generate code if needed
+    sh("cd ../.. && dart run build_runner build --delete-conflicting-outputs") rescue nil
+    
+    # Build release AAB
+    sh("cd ../.. && flutter build appbundle --release")
+    
+    UI.success("✅ App Bundle built successfully!")
+    UI.message("📦 Location: #{AAB_PATH}")
+  end
+
+  # ═════════════════════════════════════════════════════════
+  # VALIDATE LANE
+  # ═════════════════════════════════════════════════════════
+  desc "Validate AAB file for Play Store"
+  lane :validate do
+    # Ensure AAB exists
+    unless File.exist?(AAB_PATH)
+      UI.user_error!("❌ AAB not found at #{AAB_PATH}. Run 'fastlane build' first.")
+    end
+    
+    # Validate with bundletool (if available)
+    validate_play_store_json_key(
+      json_key: ENV["GOOGLE_PLAY_JSON_KEY_FILE"] || "fastlane/play-store-key.json"
+    )
+    
+    UI.success("✅ AAB and service account validated!")
+  end
+
+  # ═════════════════════════════════════════════════════════
+  # INTERNAL TESTING LANE
+  # ═════════════════════════════════════════════════════════
+  desc "Deploy to Play Store Internal Testing track"
+  lane :internal do
+    build unless File.exist?(AAB_PATH)
+    
+    upload_to_play_store(
+      track: "internal",
+      aab: AAB_PATH,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      release_status: "completed"
+    )
+    
+    UI.success("🚀 Deployed to Internal Testing!")
+    UI.message("📱 Testers can access the new version in ~1 hour")
+  end
+
+  # ═════════════════════════════════════════════════════════
+  # BETA (CLOSED TESTING) LANE
+  # ═════════════════════════════════════════════════════════
+  desc "Deploy to Play Store Closed Beta track"
+  lane :beta do
+    build unless File.exist?(AAB_PATH)
+    
+    upload_to_play_store(
+      track: "beta",
+      aab: AAB_PATH,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      release_status: "completed"
+    )
+    
+    UI.success("🚀 Deployed to Closed Beta!")
+    UI.message("📱 Beta testers can access the new version in ~1 hour")
+  end
+
+  # ═════════════════════════════════════════════════════════
+  # PRODUCTION LANE
+  # ═════════════════════════════════════════════════════════
+  desc "Deploy to Play Store Production track"
+  lane :production do |options|
+    build unless File.exist?(AAB_PATH)
+    
+    # Default rollout percentage (can be overridden)
+    rollout = options[:rollout] || 0.1  # 10% rollout by default
+    
+    upload_to_play_store(
+      track: "production",
+      aab: AAB_PATH,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      release_status: "inProgress",
+      rollout: rollout.to_s
+    )
+    
+    UI.success("🚀 Deployed to Production with #{(rollout * 100).to_i}% rollout!")
+    UI.important("⚠️  Monitor crash reports before increasing rollout")
+  end
+
+  # ═════════════════════════════════════════════════════════
+  # PROMOTE LANE
+  # ═════════════════════════════════════════════════════════
+  desc "Promote build from one track to another"
+  lane :promote do |options|
+    from_track = options[:from] || "internal"
+    to_track = options[:to] || "production"
+    rollout = options[:rollout] || 0.1
+    
+    upload_to_play_store(
+      track: from_track,
+      track_promote_to: to_track,
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      release_status: to_track == "production" ? "inProgress" : "completed",
+      rollout: to_track == "production" ? rollout.to_s : nil
+    )
+    
+    UI.success("🚀 Promoted from #{from_track} to #{to_track}!")
+  end
+
+  # ═════════════════════════════════════════════════════════
+  # INCREMENT VERSION CODE
+  # ═════════════════════════════════════════════════════════
+  desc "Increment version code in pubspec.yaml"
+  lane :increment_version do
+    pubspec_path = "../../pubspec.yaml"
+    
+    # Read current version
+    content = File.read(pubspec_path)
+    current_version = content.match(/version:\s*(.+)\+(\d+)/i)
+    
+    if current_version
+      version_name = current_version[1]
+      version_code = current_version[2].to_i + 1
+      
+      # Update pubspec.yaml
+      new_content = content.gsub(
+        /version:\s*.+\+\d+/i,
+        "version: #{version_name}+#{version_code}"
+      )
+      File.write(pubspec_path, new_content)
+      
+      UI.success("✅ Version code incremented to #{version_code}")
+    else
+      UI.user_error!("❌ Could not parse version from pubspec.yaml")
+    end
+  end
+
+  # ═════════════════════════════════════════════════════════
+  # ERROR HANDLING
+  # ═════════════════════════════════════════════════════════
+  error do |lane, exception|
+    UI.error("❌ Lane '#{lane}' failed!")
+    UI.error(exception.message)
+  end
+
+
+
+end

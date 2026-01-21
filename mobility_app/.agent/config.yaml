@@ -1,0 +1,113 @@
+# RideLink Agent Configuration
+# Centralized settings for Antigravity agent operations
+
+project:
+  name: RideLink
+  type: flutter-mobile
+  target: production
+  description: Mobility platform for Sub-Saharan Africa
+
+agents:
+  primary_model: gemini-2.0-flash-thinking-exp
+  fallback_model: claude-sonnet-4.5
+  temperature: 0.3  # Lower for deterministic code
+  max_tokens: 8192
+
+context:
+  # Always include these files in context
+  always_include:
+    - lib/core/constants/app_constants.dart
+    - lib/core/theme/app_theme.dart
+    - lib/core/router/app_router.dart
+    - pubspec.yaml
+    - README.md
+    - .agent/rules/project_rules.md
+  
+  # Maximum context window usage
+  max_context_tokens: 100000
+  
+  # Prioritize recent files
+  recency_bias: true
+
+workflows:
+  directory: .agent/workflows
+  auto_suggest: true
+
+rules:
+  # Apply these rules to all tasks
+  enforce:
+    - flutter-standards
+    - supabase-patterns
+    - error-handling
+    - testing-requirements
+    - minimalist-ux
+  
+  # Warn but don't block
+  warn:
+    - performance-optimization
+    - accessibility
+    - offline-first
+
+artifacts:
+  output_directory: .agent/artifacts
+  retention_days: 30
+  
+  # Required artifacts per task type
+  required:
+    feature:
+      - code
+      - tests
+      - documentation
+      - screenshots
+    bugfix:
+      - code
+      - tests
+      - before_after_evidence
+    refactor:
+      - code
+      - tests
+      - performance_comparison
+    security:
+      - audit_report
+      - remediation_plan
+
+quality_gates:
+  code_quality:
+    flutter_analyze: 0  # errors allowed
+    dart_format: 100%   # formatted
+    test_coverage: 80%  # minimum
+  
+  performance:
+    app_size_android: 25MB  # max
+    app_size_ios: 30MB      # max
+    startup_time: 3s        # max
+    fps: 60                 # min
+  
+  security:
+    no_hardcoded_secrets: true
+    rls_enabled: true
+    https_only: true
+
+monitoring:
+  enabled: true
+  metrics:
+    - task_completion_time
+    - code_quality_score
+    - test_coverage
+    - artifact_count
+    - build_success_rate
+  
+  alerts:
+    task_time_exceeded: 4h
+    test_coverage_below: 80%
+    build_failure: immediate
+
+# Project-specific constraints
+constraints:
+  target_region: Sub-Saharan Africa
+  offline_first: required
+  whatsapp_handoff: required
+  request_expiry: 60s
+  ui_style: glassmorphism
+  min_android_sdk: 21
+  min_ios_version: 12.0

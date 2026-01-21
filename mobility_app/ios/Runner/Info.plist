@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>CFBundleDevelopmentRegion</key>
+		<string>$(DEVELOPMENT_LANGUAGE)</string>
+		<key>CFBundleDisplayName</key>
+		<string>Mobility</string>
+		<key>CFBundleExecutable</key>
+		<string>$(EXECUTABLE_NAME)</string>
+		<key>CFBundleIdentifier</key>
+		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+		<key>CFBundleInfoDictionaryVersion</key>
+		<string>6.0</string>
+		<key>CFBundleName</key>
+		<string>mobility_app</string>
+		<key>CFBundlePackageType</key>
+		<string>APPL</string>
+		<key>CFBundleShortVersionString</key>
+		<string>$(FLUTTER_BUILD_NAME)</string>
+		<key>CFBundleSignature</key>
+		<string>????</string>
+		<key>CFBundleVersion</key>
+		<string>$(FLUTTER_BUILD_NUMBER)</string>
+		<!-- ═══════════════════════════════════════════════════════ -->
+		<!-- GOOGLE MAPS API KEY -->
+		<!-- ═══════════════════════════════════════════════════════ -->
+		<key>GMSApiKey</key>
+		<string>YOUR_GOOGLE_MAPS_API_KEY_HERE</string>
+		<key>LSRequiresIPhoneOS</key>
+		<true/>
+		<key>UILaunchStoryboardName</key>
+		<string>LaunchScreen</string>
+		<key>UIMainStoryboardFile</key>
+		<string>Main</string>
+		<key>UISupportedInterfaceOrientations</key>
+		<array>
+			<string>UIInterfaceOrientationPortrait</string>
+			<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		</array>
+		<key>UISupportedInterfaceOrientations~ipad</key>
+		<array>
+			<string>UIInterfaceOrientationPortrait</string>
+			<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		</array>
+		<key>UIViewControllerBasedStatusBarAppearance</key>
+		<false/>
+		<key>CADisableMinimumFrameDurationOnPhone</key>
+		<true/>
+		<key>UIApplicationSupportsIndirectInputEvents</key>
+		<true/>
+		<!-- ═══════════════════════════════════════════════════════ -->
+		<!-- LOCATION PERMISSIONS -->
+		<!-- ═══════════════════════════════════════════════════════ -->
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>We need your location to find nearby drivers and passengers in your area.</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>Background location helps us match you with riders even when the app is minimized.</string>
+		<key>NSLocationAlwaysUsageDescription</key>
+		<string>Background location helps us match you with riders even when the app is minimized.</string>
+		<!-- Enable background location updates -->
+		<key>UIBackgroundModes</key>
+		<array>
+			<string>location</string>
+			<string>fetch</string>
+			<string>remote-notification</string>
+		</array>
+		<!-- ═══════════════════════════════════════════════════════ -->
+		<!-- CAMERA PERMISSION (QR Scanner) -->
+		<!-- ═══════════════════════════════════════════════════════ -->
+		<key>NSCameraUsageDescription</key>
+		<string>Camera access is needed to scan QR codes for ride verification.</string>
+		<!-- NFC CAPABILITY -->
+		<!-- ═══════════════════════════════════════════════════════ -->
+		<key>NFCReaderUsageDescription</key>
+		<string>NFC is used for quick ride verification and payments.</string>
+		<!-- Specific ISO7816 identifiers for payment cards -->
+		<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
+		<array>
+			<string>D2760000850101</string>
+			<string>A0000002471001</string>
+		</array>
+		<!-- Enable Near Field Communication Tag Reading Formats -->
+		<key>com.apple.developer.nfc.readersession.formats</key>
+		<array>
+			<string>NDEF</string>
+			<string>TAG</string>
+		</array>
+		<!-- ═══════════════════════════════════════════════════════ -->
+		<!-- MICROPHONE PERMISSION (Voice AI Input) -->
+		<!-- ═══════════════════════════════════════════════════════ -->
+		<key>NSSpeechRecognitionUsageDescription</key>
+		<string>Speech recognition helps you schedule trips using voice commands.</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>Microphone access is needed for voice-based trip scheduling with AI assistant.</string>
+		<!-- ═══════════════════════════════════════════════════════ -->
+		<!-- iOS VERSION REQUIREMENTS -->
+		<!-- ═══════════════════════════════════════════════════════ -->
+		<key>MinimumOSVersion</key>
+		<string>13.0</string>
+		<!-- ═══════════════════════════════════════════════════════ -->
+		<!-- DEEP LINKING -->
+		<!-- ═══════════════════════════════════════════════════════ -->
+		<key>FlutterDeepLinkingEnabled</key>
+		<true/>
+		<key>UIStatusBarHidden</key>
+		<false/>
+	</dict>
+</plist>

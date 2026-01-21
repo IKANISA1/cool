@@ -1,0 +1,9 @@
+# ═══════════════════════════════════════════════════════════
+# FASTLANE APPFILE - Android Configuration
+# ═══════════════════════════════════════════════════════════
+#
+# Package name for your Android app (from AndroidManifest.xml)
+# ═══════════════════════════════════════════════════════════
+
+json_key_file(ENV["GOOGLE_PLAY_JSON_KEY_FILE"] || "fastlane/play-store-key.json")
+package_name("com.easymo.mobility_app")

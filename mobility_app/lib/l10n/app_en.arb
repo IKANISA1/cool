@@ -1,0 +1,160 @@
+{
+  "@@locale": "en",
+  "appTitle": "Mobility",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "welcome": "Welcome",
+  "continueButton": "Continue",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "loading": "Loading...",
+  "retry": "Retry",
+  "error": "Error",
+  "success": "Success",
+  
+  "phoneAuthTitle": "Enter your phone number",
+  "phoneAuthSubtitle": "We'll send you a verification code",
+  "phoneNumberLabel": "Phone Number",
+  "sendCode": "Send Code",
+  
+  "otpTitle": "Verification",
+  "otpSubtitle": "Enter the code sent to {phone}",
+  "@otpSubtitle": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyCode": "Verify",
+  "resendCode": "Resend Code",
+  "codeExpires": "Code expires in {seconds} seconds",
+  "@codeExpires": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  
+  "discoveryTitle": "Nearby",
+  "findDrivers": "Find Drivers",
+  "findPassengers": "Find Passengers",
+  "searchRadius": "Search Radius",
+  "noUsersNearby": "No users nearby",
+  "adjustRadius": "Try adjusting your search radius",
+  
+  "profileTitle": "Profile",
+  "editProfile": "Edit Profile",
+  "name": "Name",
+  "role": "Role",
+  "roleDriver": "Driver",
+  "rolePassenger": "Passenger",
+  "roleBoth": "Both",
+  "language": "Language",
+  "rating": "Rating",
+  "verified": "Verified",
+  
+  "vehicleTitle": "My Vehicles",
+  "addVehicle": "Add Vehicle",
+  "vehicleCategory": "Category",
+  "vehiclePlate": "Plate Number",
+  "vehicleCapacity": "Capacity",
+  "vehicleCategoryMoto": "Motorcycle",
+  "vehicleCategoryCab": "Taxi Cab",
+  "vehicleCategoryLiffan": "Liffan",
+  "vehicleCategoryTruck": "Truck",
+  "vehicleCategoryRent": "Rental",
+  
+  "requestsTitle": "Requests",
+  "incomingRequests": "Incoming",
+  "outgoingRequests": "Outgoing",
+  "pendingRequests": "Pending",
+  "acceptRequest": "Accept",
+  "declineRequest": "Decline",
+  "requestExpired": "Request expired",
+  "noRequests": "No pending requests",
+  "noIncomingRequests": "No incoming requests",
+  "noOutgoingRequests": "No outgoing requests",
+  "incomingRequestsHint": "Requests from other users will appear here",
+  "outgoingRequestsHint": "Requests you send will appear here",
+  "requestStatusPending": "Pending",
+  "requestStatusAccepted": "Accepted",
+  "requestStatusDenied": "Denied",
+  "requestStatusExpired": "Expired",
+  "requestStatusCancelled": "Cancelled",
+  "justNow": "Just now",
+  "minutesAgo": "{minutes}m ago",
+  "@minutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{hours}h ago",
+  "@hoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgo": "{days}d ago",
+  "@daysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  
+  "scheduleTitle": "Schedule Trip",
+  "scheduleOffer": "Offer a Ride",
+  "scheduleRequest": "Request a Ride",
+  "from": "From",
+  "to": "To",
+  "when": "When",
+  "seats": "Seats",
+  "vehicleType": "Vehicle Type",
+  "notes": "Notes",
+  "scheduleTrip": "Schedule",
+  
+  "aiAssistantTitle": "AI Assistant",
+  "aiAssistantHint": "How can I help you today?",
+  "typeMessage": "Type a message...",
+  
+  "settingsTitle": "Settings",
+  "darkMode": "Dark Mode",
+  "notifications": "Notifications",
+  "language_settings": "Language",
+  "privacyPolicy": "Privacy Policy",
+  "termsOfService": "Terms of Service",
+  "logout": "Log Out",
+  "version": "Version",
+  
+  "locationPermissionTitle": "Location Permission",
+  "locationPermissionMessage": "Location is required to find nearby users",
+  "grantPermission": "Grant Permission",
+  
+  "distanceAway": "{distance} away",
+  "@distanceAway": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "lastSeen": "Last seen {time}",
+  "@lastSeen": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "onlineNow": "Online now"
+}

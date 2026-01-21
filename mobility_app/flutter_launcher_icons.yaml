@@ -1,0 +1,17 @@
+# Flutter Launcher Icons Configuration
+# Run: dart run flutter_launcher_icons
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/app_icon.png"
+  
+  # Remove adaptive icon - use single icon
+  remove_alpha_ios: true
+  
+  # Web
+  web:
+    generate: true
+    image_path: "assets/icons/app_icon.png"
+    background_color: "#1A237E"
+    theme_color: "#3F51B5"

@@ -1,0 +1,23 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+# ═══════════════════════════════════════════════════════════
+# FASTLANE FOR ANDROID DEPLOYMENT
+# ═══════════════════════════════════════════════════════════
+#
+# Install: bundle install
+# Usage:   bundle exec fastlane <lane>
+#
+# Lanes:
+#   - internal  : Deploy to Play Store Internal Testing
+#   - beta      : Deploy to Play Store Closed Beta
+#   - production: Deploy to Play Store Production
+#   - validate  : Validate AAB file format
+# ═══════════════════════════════════════════════════════════
+
+gem "fastlane", "~> 2.225"
+
+# Plugins
+plugins_path = File.join(File.dirname(__FILE__), 'fastlane', 'Pluginfile')
+eval_gemfile(plugins_path) if File.exist?(plugins_path)
