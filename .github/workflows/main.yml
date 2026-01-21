@@ -187,13 +187,13 @@ jobs:
         run: flutter build appbundle --release
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: android-apk
           path: build/app/outputs/flutter-apk/*.apk
 
       - name: Upload App Bundle artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: android-aab
           path: build/app/outputs/bundle/release/*.aab
@@ -236,7 +236,7 @@ jobs:
         run: flutter build ios --release --no-codesign
 
       - name: Upload iOS build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ios-build
           path: build/ios/iphoneos/Runner.app
