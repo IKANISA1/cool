@@ -1,16 +1,54 @@
-# mobility_app
+# RideLink
 
-A new Flutter project.
+AI-First Mobility Platform for Sub-Saharan Africa.
 
-## Getting Started
+## Quick Start
 
-This project is a starting point for a Flutter application.
+```bash
+# Install dependencies
+flutter pub get
 
-A few resources to get you started if this is your first Flutter project:
+# Copy environment file and add your keys
+cp .env.example .env
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+# Run the app
+flutter run
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Stack
+
+- **Frontend**: Flutter 3.38+
+- **Backend**: Supabase (Auth, Database, Edge Functions)
+- **AI**: Google Gemini for natural language scheduling
+- **Maps**: Google Maps + Flutter Map
+
+## Project Structure
+
+```
+lib/
+├── core/           # Router, DI, Theme, Constants
+├── features/       # Feature modules (auth, discovery, scheduling, etc.)
+├── shared/         # Shared widgets, services, models
+└── l10n/           # Localization (EN, FR, RW)
+```
+
+## Documentation
+
+- [Deployment Guide](DEPLOYMENT.md)
+- [QA Checklist](QA_CHECKLIST.md)
+- [Restructure Summary](RESTRUCTURE_SUMMARY.md)
+- [App Store Deployment](docs/APPSTORE_DEPLOYMENT.md)
+- [Play Store Setup](docs/PLAYSTORE_SETUP.md)
+
+## Commands
+
+```bash
+flutter analyze        # Static analysis
+flutter test           # Run tests
+flutter build apk      # Build Android APK
+flutter build ios      # Build iOS (requires macOS)
+```
+
+## License
+
+Proprietary - All rights reserved.
