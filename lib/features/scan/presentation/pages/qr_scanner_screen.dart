@@ -52,6 +52,9 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
                     return const Icon(Icons.camera_front, color: Colors.white);
                   case CameraFacing.back:
                     return const Icon(Icons.camera_rear, color: Colors.white);
+                  case CameraFacing.unknown:
+                  case CameraFacing.external:
+                    return const Icon(Icons.camera_rear, color: Colors.grey);
                 }
               },
             ),

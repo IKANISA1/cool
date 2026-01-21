@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/services/location_service.dart';
 import '../../data/models/station_marker.dart';
@@ -16,10 +18,15 @@ import 'station_locator_state.dart';
 /// - Station selection for details view
 /// - Location updates
 /// - Search and filtering
+/// - Sorting and pagination
+/// - Favorites management
 class StationLocatorBloc extends Bloc<StationLocatorEvent, StationLocatorState> {
   final LocationService _locationService;
   final StationRepository? _repository;
   final _log = Logger('StationLocatorBloc');
+
+  static const int _pageSize = 20;
+  static const String _favoritesKeyPrefix = 'station_favorites_';
 
   /// Expose location service for map view
   LocationService get locationService => _locationService;
@@ -36,6 +43,11 @@ class StationLocatorBloc extends Bloc<StationLocatorEvent, StationLocatorState> 
     on<ClearStationSelection>(_onClearStationSelection);
     on<UpdateMapPosition>(_onUpdateMapPosition);
     on<SearchStations>(_onSearchStations);
+    on<LoadMoreStations>(_onLoadMoreStations);
+    on<ToggleFilter>(_onToggleFilter);
+    on<ToggleFavorite>(_onToggleFavorite);
+    on<ClearFilters>(_onClearFilters);
+    on<UpdateSortBy>(_onUpdateSortBy);
   }
 
   /// Handle LoadNearbyStations event
@@ -77,13 +89,22 @@ class StationLocatorBloc extends Bloc<StationLocatorEvent, StationLocatorState> 
         stations = _getMockStations(event.stationType);
       }
 
+      // Load favorites
+      final favoriteIds = await _loadFavorites(event.stationType);
+
+      // Sort stations by default (distance)
+      final sortedStations = _sortStations(stations, 'distance', latitude, longitude);
+
       _log.info('Loaded ${stations.length} stations');
 
       emit(StationLocatorLoaded(
-        stations: stations,
+        stations: sortedStations,
+        allStations: sortedStations,
         stationType: event.stationType,
         userLatitude: latitude,
         userLongitude: longitude,
+        favoriteIds: favoriteIds,
+        hasMore: stations.length >= _pageSize,
       ));
     } catch (e, stackTrace) {
       _log.severe('Failed to load stations', e, stackTrace);
@@ -119,7 +140,6 @@ class StationLocatorBloc extends Bloc<StationLocatorEvent, StationLocatorState> 
         (stations) => stations.map((s) => StationMarker.fromEVCharging(s)).toList(),
       );
     }
-
   }
 
   /// Handle RefreshStations event
@@ -182,12 +202,21 @@ class StationLocatorBloc extends Bloc<StationLocatorEvent, StationLocatorState> 
       final currentState = state as StationLocatorLoaded;
       
       if (event.query.isEmpty) {
-        emit(currentState.copyWith(clearSearchQuery: true));
+        // Restore all stations and reapply filters
+        final filteredStations = _applyFilters(
+          currentState.allStations,
+          currentState.filters,
+          currentState.favoriteIds,
+        );
+        emit(currentState.copyWith(
+          stations: filteredStations,
+          clearSearchQuery: true,
+        ));
         return;
       }
 
       // Filter stations by search query
-      final filteredStations = currentState.stations.where((station) {
+      final filteredStations = currentState.allStations.where((station) {
         final query = event.query.toLowerCase();
         return station.name.toLowerCase().contains(query) ||
             (station.brand?.toLowerCase().contains(query) ?? false) ||
@@ -195,16 +224,275 @@ class StationLocatorBloc extends Bloc<StationLocatorEvent, StationLocatorState> 
             (station.details['address']?.toString().toLowerCase().contains(query) ?? false);
       }).toList();
 
+      // Apply other filters on top of search
+      final finalStations = _applyFilters(
+        filteredStations,
+        currentState.filters,
+        currentState.favoriteIds,
+      );
+
       emit(currentState.copyWith(
-        stations: filteredStations,
+        stations: finalStations,
         searchQuery: event.query,
       ));
     }
   }
 
+  /// Handle LoadMoreStations event (pagination)
+  Future<void> _onLoadMoreStations(
+    LoadMoreStations event,
+    Emitter<StationLocatorState> emit,
+  ) async {
+    if (state is! StationLocatorLoaded) return;
+    
+    final currentState = state as StationLocatorLoaded;
+    if (currentState.isLoadingMore || !currentState.hasMore) return;
+
+    emit(currentState.copyWith(isLoadingMore: true));
+
+    try {
+      // In a real implementation, fetch next page from repository
+      // For now, simulate pagination with mock data delay
+      await Future.delayed(const Duration(milliseconds: 500));
+      
+      // Mark as no more data (mock implementation)
+      emit(currentState.copyWith(
+        isLoadingMore: false,
+        hasMore: false,
+        currentPage: currentState.currentPage + 1,
+      ));
+    } catch (e) {
+      _log.warning('Failed to load more stations: $e');
+      emit(currentState.copyWith(isLoadingMore: false));
+    }
+  }
+
+  /// Handle ToggleFilter event
+  void _onToggleFilter(
+    ToggleFilter event,
+    Emitter<StationLocatorState> emit,
+  ) {
+    if (state is! StationLocatorLoaded) return;
+    
+    final currentState = state as StationLocatorLoaded;
+    final newFilters = Map<String, bool>.from(currentState.filters);
+    newFilters[event.key] = event.value;
+
+    // Reapply all filters
+    var filteredStations = currentState.allStations;
+    
+    // Apply search query if exists
+    if (currentState.searchQuery?.isNotEmpty == true) {
+      final query = currentState.searchQuery!.toLowerCase();
+      filteredStations = filteredStations.where((station) {
+        return station.name.toLowerCase().contains(query) ||
+            (station.brand?.toLowerCase().contains(query) ?? false) ||
+            (station.network?.toLowerCase().contains(query) ?? false) ||
+            (station.details['address']?.toString().toLowerCase().contains(query) ?? false);
+      }).toList();
+    }
+
+    // Apply filters
+    filteredStations = _applyFilters(filteredStations, newFilters, currentState.favoriteIds);
+
+    emit(currentState.copyWith(
+      stations: filteredStations,
+      filters: newFilters,
+    ));
+  }
+
+  /// Handle ToggleFavorite event
+  Future<void> _onToggleFavorite(
+    ToggleFavorite event,
+    Emitter<StationLocatorState> emit,
+  ) async {
+    if (state is! StationLocatorLoaded) return;
+    
+    final currentState = state as StationLocatorLoaded;
+    final newFavorites = Set<String>.from(currentState.favoriteIds);
+
+    if (newFavorites.contains(event.stationId)) {
+      newFavorites.remove(event.stationId);
+    } else {
+      newFavorites.add(event.stationId);
+    }
+
+    // Persist to storage
+    await _saveFavorites(event.stationType, newFavorites);
+
+    // If favorites filter is active, reapply filters
+    var stations = currentState.stations;
+    if (currentState.filters['favorites'] == true) {
+      stations = _applyFilters(
+        currentState.allStations,
+        currentState.filters,
+        newFavorites,
+      );
+    }
+
+    emit(currentState.copyWith(
+      favoriteIds: newFavorites,
+      stations: stations,
+    ));
+  }
+
+  /// Handle ClearFilters event
+  void _onClearFilters(
+    ClearFilters event,
+    Emitter<StationLocatorState> emit,
+  ) {
+    if (state is! StationLocatorLoaded) return;
+    
+    final currentState = state as StationLocatorLoaded;
+    
+    emit(currentState.copyWith(
+      stations: currentState.allStations,
+      filters: {},
+      clearSearchQuery: true,
+    ));
+  }
+
+  /// Handle UpdateSortBy event
+  void _onUpdateSortBy(
+    UpdateSortBy event,
+    Emitter<StationLocatorState> emit,
+  ) {
+    if (state is! StationLocatorLoaded) return;
+    
+    final currentState = state as StationLocatorLoaded;
+    
+    final sortedStations = _sortStations(
+      currentState.stations,
+      event.sortBy,
+      currentState.userLatitude,
+      currentState.userLongitude,
+    );
+    
+    final sortedAllStations = _sortStations(
+      currentState.allStations,
+      event.sortBy,
+      currentState.userLatitude,
+      currentState.userLongitude,
+    );
+
+    emit(currentState.copyWith(
+      stations: sortedStations,
+      allStations: sortedAllStations,
+      sortBy: event.sortBy,
+    ));
+  }
+
+  /// Apply filters to station list
+  List<StationMarker> _applyFilters(
+    List<StationMarker> stations,
+    Map<String, bool> filters,
+    Set<String> favoriteIds,
+  ) {
+    var result = stations;
+
+    // Filter by favorites
+    if (filters['favorites'] == true) {
+      result = result.where((s) => favoriteIds.contains(s.id)).toList();
+    }
+
+    // Filter by operating status
+    if (filters['operating_now'] == true) {
+      result = result.where((s) => s.isOperational).toList();
+    }
+
+    // Filter by high availability
+    if (filters['high_availability'] == true) {
+      result = result.where((s) {
+        final available = s.isBatterySwap
+            ? s.details['batteries_available'] as int? ?? 0
+            : s.details['available_ports'] as int? ?? 0;
+        return available >= 3;
+      }).toList();
+    }
+
+    return result;
+  }
+
+  /// Sort stations by specified criteria
+  List<StationMarker> _sortStations(
+    List<StationMarker> stations,
+    String sortBy,
+    double? userLat,
+    double? userLng,
+  ) {
+    final sorted = List<StationMarker>.from(stations);
+
+    switch (sortBy) {
+      case 'distance':
+        if (userLat != null && userLng != null) {
+          sorted.sort((a, b) {
+            final distA = _calculateDistance(userLat, userLng, a.position.latitude, a.position.longitude);
+            final distB = _calculateDistance(userLat, userLng, b.position.latitude, b.position.longitude);
+            return distA.compareTo(distB);
+          });
+        }
+        break;
+      case 'rating':
+        sorted.sort((a, b) {
+          final ratingA = (a.details['rating'] as double?) ?? 0;
+          final ratingB = (b.details['rating'] as double?) ?? 0;
+          return ratingB.compareTo(ratingA); // Descending
+        });
+        break;
+      case 'availability':
+        sorted.sort((a, b) {
+          final availA = a.isBatterySwap
+              ? (a.details['batteries_available'] as int?) ?? 0
+              : (a.details['available_ports'] as int?) ?? 0;
+          final availB = b.isBatterySwap
+              ? (b.details['batteries_available'] as int?) ?? 0
+              : (b.details['available_ports'] as int?) ?? 0;
+          return availB.compareTo(availA); // Descending
+        });
+        break;
+      case 'name':
+        sorted.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+        break;
+    }
+
+    return sorted;
+  }
+
+  /// Simple distance calculation (Haversine approximation)
+  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    final latDiff = (lat2 - lat1).abs();
+    final lonDiff = (lon2 - lon1).abs();
+    return latDiff * latDiff + lonDiff * lonDiff; // Squared distance for sorting
+  }
+
+  /// Load favorites from storage
+  Future<Set<String>> _loadFavorites(String stationType) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key = '$_favoritesKeyPrefix$stationType';
+      final json = prefs.getString(key);
+      if (json != null) {
+        final list = jsonDecode(json) as List<dynamic>;
+        return list.map((e) => e.toString()).toSet();
+      }
+    } catch (e) {
+      _log.warning('Failed to load favorites: $e');
+    }
+    return {};
+  }
+
+  /// Save favorites to storage
+  Future<void> _saveFavorites(String stationType, Set<String> favorites) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key = '$_favoritesKeyPrefix$stationType';
+      await prefs.setString(key, jsonEncode(favorites.toList()));
+    } catch (e) {
+      _log.warning('Failed to save favorites: $e');
+    }
+  }
+
   /// Generate mock stations for UI testing
-  ///
-  /// TODO: Replace with actual API integration
   List<StationMarker> _getMockStations(String stationType) {
     final List<StationMarker> markers = [];
 

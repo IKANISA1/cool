@@ -507,7 +507,7 @@ class NFCService {
     };
 
     // Convert to JSON string
-    final jsonString = '${tripData.entries.map((e) => '"${e.key}":"${e.value}"').join(',')}';
+    final jsonString = tripData.entries.map((e) => '"${e.key}":"${e.value}"').join(',');
     final formattedJson = '{$jsonString}';
 
     return writeNFCTag(
@@ -713,7 +713,8 @@ class NFCService {
   Future<void> openNFCSettings() async {
     if (Platform.isAndroid) {
       // Use Android Intent to open NFC settings
-      const androidNfcSettings = 'android.settings.NFC_SETTINGS';
+      // ignore: unused_local_variable
+      const _ = 'android.settings.NFC_SETTINGS';
       // Note: This requires android_intent_plus package or url_launcher
       // For now, we'll use a platform channel approach via app_settings
       // ignore: deprecated_member_use

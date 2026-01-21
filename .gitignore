@@ -106,6 +106,11 @@ test-results/
 play-store-key.json
 keystore_base64.txt
 android/fastlane/play-store-key.json
+# Keystores and signing config
+*.jks
+*.keystore
+android/key.properties
+android/app/keystore.jks
 
 # ═══════════════════════════════════════════════════════════
 # SUPABASE - CLI TEMP FILES

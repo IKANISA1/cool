@@ -205,8 +205,8 @@ class _StationMapViewState extends State<StationMapView> {
   void _setMapStyle(GoogleMapController controller, Brightness brightness) {
     final style =
         brightness == Brightness.dark ? MapStyles.darkMode : MapStyles.lightMode;
-    // Note: setMapStyle is deprecated but still works for now
-    controller.setMapStyle(style);
+    // TODO: Migrate to GoogleMap.style property (requires architecture change)
+    controller.setMapStyle(style); // ignore: deprecated_member_use
   }
 
   @override

@@ -249,3 +249,23 @@ class GeocodingException extends AppException {
     super.originalError,
   });
 }
+
+// ═══════════════════════════════════════════════════════════
+// CONFIGURATION EXCEPTIONS
+// ═══════════════════════════════════════════════════════════
+
+/// Missing required configuration
+class ConfigurationException extends AppException {
+  final List<String> missingKeys;
+
+  const ConfigurationException({
+    super.message = 'Missing required configuration',
+    super.code = 'CONFIG_ERROR',
+    super.originalError,
+    this.missingKeys = const [],
+  });
+
+  @override
+  String toString() => 'ConfigurationException: $message. Missing: $missingKeys';
+}
+

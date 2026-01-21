@@ -26,7 +26,7 @@ dependencies:
   # ════════════════════════════════════════════════════════════
   # LOCATION & MAPS
   # ════════════════════════════════════════════════════════════
-  geolocator: ^13.0.2                # Location services
+  geolocator: ^14.0.2                # Location services
   geocoding: ^3.0.0                  # Geocoding services
   google_maps_flutter: ^2.10.0       # Google Maps
   # google_maps_cluster_manager removed due to naming conflict with google_maps_flutter 2.9+
@@ -37,7 +37,7 @@ dependencies:
   # ════════════════════════════════════════════════════════════
   # NAVIGATION
   # ════════════════════════════════════════════════════════════
-  go_router: ^14.6.2                 # Declarative routing
+  go_router: ^17.0.1                 # Declarative routing
 
   # ════════════════════════════════════════════════════════════
   # UI/UX - GLASSMORPHISM & ANIMATIONS
@@ -68,7 +68,7 @@ dependencies:
   # UTILITIES (QR, NFC, HAPTICS)
   # ════════════════════════════════════════════════════════════
   nfc_manager: ^4.1.1                # NFC read/write (Kotlin 2.x compatible)
-  mobile_scanner: ^5.0.0             # QR scanning
+  mobile_scanner: ^7.1.4             # QR scanning
   qr_flutter: ^4.1.0                 # QR generation
   vibration: ^2.0.0                  # Haptic feedback
 
@@ -82,8 +82,8 @@ dependencies:
   # ════════════════════════════════════════════════════════════
   # DEPENDENCY INJECTION
   # ════════════════════════════════════════════════════════════
-  get_it: ^7.7.0                    # Service locator
-  injectable: ^2.4.0                # DI code generation
+  get_it: ^9.2.0                    # Service locator
+  injectable: ^2.7.1+4              # DI code generation
 
   # ════════════════════════════════════════════════════════════
   # FUNCTIONAL PROGRAMMING
@@ -157,9 +157,6 @@ dev_dependencies:
   # ════════════════════════════════════════════════════════════
   # TESTING & TOOLS
   # ════════════════════════════════════════════════════════════
-  mockito: ^5.4.4
-  bloc_test: ^10.0.0
-  mockito: ^5.6.3
   bloc_test: ^10.0.0
   mocktail: ^1.0.3
   flutter_launcher_icons: ^0.14.4

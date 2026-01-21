@@ -1,21 +1,18 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ridelink/core/config/env_config.dart';
+import 'package:ridelink/core/error/error_handler.dart';
+import 'package:ridelink/core/error/exceptions.dart';
 import 'package:ridelink/core/theme/app_theme.dart';
 import 'package:ridelink/core/router/app_router.dart';
 import 'package:ridelink/core/di/injection.dart';
+import 'package:ridelink/core/widgets/config_error_screen.dart';
 import 'package:ridelink/features/auth/presentation/bloc/auth_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Load environment variables
-  await dotenv.load(fileName: ".env");
-
-  // Initialize Supabase and Dependencies
-  await configureDependencies();
   
   // Set system UI overlay style
   SystemChrome.setSystemUIOverlayStyle(
@@ -34,14 +31,38 @@ void main() async {
   // Global Error Handling
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
-    // TODO: Log to Crashlytics/Sentry
+    ErrorHandler.logException(
+      details.exception,
+      stackTrace: details.stack,
+      context: 'FlutterError',
+    );
   };
   PlatformDispatcher.instance.onError = (error, stack) {
-    // TODO: Log to Crashlytics/Sentry
+    ErrorHandler.logException(error, stackTrace: stack, context: 'PlatformDispatcher');
     return true;
   };
-  
-  runApp(const RideLinkApp());
+
+  try {
+    // Load and validate environment variables
+    await EnvConfig.init();
+    
+    // Initialize Supabase and Dependencies
+    await configureDependencies();
+    
+    runApp(const RideLinkApp());
+  } on ConfigurationException catch (e) {
+    // Show configuration error screen
+    ErrorHandler.logException(e, context: 'Configuration');
+    runApp(ConfigErrorApp(exception: e));
+  } catch (e, stack) {
+    // Show generic error screen for unexpected startup errors
+    ErrorHandler.logException(e, stackTrace: stack, context: 'Startup');
+    runApp(ConfigErrorApp(
+      exception: ConfigurationException(
+        message: 'Failed to start app: ${e.toString()}',
+      ),
+    ));
+  }
 }
 
 class RideLinkApp extends StatelessWidget {

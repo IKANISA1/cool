@@ -19,6 +19,8 @@ import 'package:ridelink/features/requests/presentation/bloc/request_event.dart'
 import 'package:ridelink/features/station_locator/presentation/bloc/station_locator_bloc.dart';
 import 'package:ridelink/features/station_locator/presentation/bloc/station_locator_event.dart';
 import 'package:ridelink/features/station_locator/presentation/pages/station_locator_page.dart';
+import 'package:ridelink/features/station_locator/presentation/pages/station_details_page.dart';
+import 'package:ridelink/features/station_locator/data/models/station_marker.dart';
 
 /// Route names for type-safe navigation
 class AppRoutes {
@@ -32,6 +34,7 @@ class AppRoutes {
   static const payment = '/payment';
   static const batterySwapStations = '/battery-swap-stations';
   static const evChargingStations = '/ev-charging-stations';
+  static const stationDetails = '/station-details';
 }
 
 /// Main app router with auth redirect guards
@@ -122,6 +125,27 @@ class AppRouter {
               ..add(const LoadNearbyStations(stationType: 'ev_charging')),
             child: const StationLocatorPage(stationType: 'ev_charging'),
           ),
+        ),
+        
+        // Station details route
+        GoRoute(
+          path: '${AppRoutes.stationDetails}/:stationType/:stationId',
+          builder: (context, state) {
+            final stationType = state.pathParameters['stationType'] ?? 'battery_swap';
+            final station = state.extra as StationMarker?;
+            
+            if (station == null) {
+              // Fallback if station not passed
+              return const Scaffold(
+                body: Center(child: Text('Station not found')),
+              );
+            }
+            
+            return StationDetailsPage(
+              station: station,
+              stationType: stationType,
+            );
+          },
         ),
       ],
     );

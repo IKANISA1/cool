@@ -78,3 +78,45 @@ class SearchStations extends StationLocatorEvent {
   @override
   List<Object?> get props => [query];
 }
+
+/// Load more stations for pagination
+class LoadMoreStations extends StationLocatorEvent {
+  const LoadMoreStations();
+}
+
+/// Toggle a filter (operating_now, high_availability)
+class ToggleFilter extends StationLocatorEvent {
+  final String key;
+  final bool value;
+
+  const ToggleFilter({required this.key, required this.value});
+
+  @override
+  List<Object?> get props => [key, value];
+}
+
+/// Toggle favorite status for a station
+class ToggleFavorite extends StationLocatorEvent {
+  final String stationType;
+  final String stationId;
+
+  const ToggleFavorite({required this.stationType, required this.stationId});
+
+  @override
+  List<Object?> get props => [stationType, stationId];
+}
+
+/// Clear all active filters
+class ClearFilters extends StationLocatorEvent {
+  const ClearFilters();
+}
+
+/// Update sort order
+class UpdateSortBy extends StationLocatorEvent {
+  final String sortBy; // distance, rating, availability, name
+
+  const UpdateSortBy({required this.sortBy});
+
+  @override
+  List<Object?> get props => [sortBy];
+}
