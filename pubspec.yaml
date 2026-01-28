@@ -93,7 +93,7 @@ dependencies:
   # ════════════════════════════════════════════════════════════
   # NETWORKING & CONNECTIVITY
   # ════════════════════════════════════════════════════════════
-  connectivity_plus: ^6.1.1          # Network status
+  connectivity_plus: ^7.0.0          # Network status
   dio: ^5.7.0                        # HTTP client
   retrofit: ^4.4.1                   # Type-safe REST
   pretty_dio_logger: ^1.4.0          # API logging
