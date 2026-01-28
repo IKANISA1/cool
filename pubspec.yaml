@@ -121,7 +121,7 @@ dependencies:
   # DEVICE INFO & UTILS
   # ════════════════════════════════════════════════════════════
   device_info_plus: ^11.5.0          # Device information
-  package_info_plus: ^8.1.1          # Package info
+  package_info_plus: ^9.0.0          # Package info
   flutter_dotenv: ^6.0.0             # Environment variables
   uuid: ^4.5.1                       # UUID generation
   logger: ^2.5.0                     # Logging
