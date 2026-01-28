@@ -45,7 +45,7 @@ dependencies:
   glassmorphism: ^3.0.0              # Glass morphism effects
   glossy: ^0.0.5                     # Additional glass widgets
   lottie: ^3.1.3                     # Lottie animations
-  rive: ^0.13.18                     # Rive interactive animations
+  rive: ^0.14.1                     # Rive interactive animations
   flutter_animate: ^4.5.0            # Easy animations
   shimmer: ^3.0.0                    # Shimmer loading effects
   flutter_slidable: ^4.0.3           # Swipe actions
