@@ -1364,14 +1364,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.1.4"
-  mockito:
-    dependency: "direct dev"
-    description:
-      name: mockito
-      sha256: a45d1aa065b796922db7b9e7e7e45f921aed17adf3a8318a1f47097e7e695566
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.6.3"
   mocktail:
     dependency: "direct dev"
     description:
@@ -2253,10 +2245,10 @@ packages:
     dependency: "direct dev"
     description:
       name: very_good_analysis
-      sha256: "1fb637c0022034b1f19ea2acb42a3603cbd8314a470646a59a2fb01f5f3a8629"
+      sha256: "96245839dbcc45dfab1af5fa551603b5c7a282028a64746c19c547d21a7f1e3a"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0"
+    version: "10.0.0"
   vibration:
     dependency: "direct main"
     description:
