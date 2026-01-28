@@ -27,7 +27,7 @@ dependencies:
   # LOCATION & MAPS
   # ════════════════════════════════════════════════════════════
   geolocator: ^14.0.2                # Location services
-  geocoding: ^3.0.0                  # Geocoding services
+  geocoding: ^4.0.0                  # Geocoding services
   google_maps_flutter: ^2.10.0       # Google Maps
   # google_maps_cluster_manager removed due to naming conflict with google_maps_flutter 2.9+
   flutter_cache_manager: ^3.3.1      # Map icon caching
