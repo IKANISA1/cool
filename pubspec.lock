@@ -644,10 +644,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_paystack_plus
-      sha256: "33697a55932a4164b606e1161d86c51c65d78f9be00beb2659aca15c8fd6a140"
+      sha256: "53b87155f8d1075bbca8ad99145787a537e55263ea91582d07ffc2202cd65210"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.1"
+    version: "2.4.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -1364,14 +1364,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.1.4"
-  mockito:
-    dependency: "direct dev"
-    description:
-      name: mockito
-      sha256: a45d1aa065b796922db7b9e7e7e45f921aed17adf3a8318a1f47097e7e695566
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.6.3"
   mocktail:
     dependency: "direct dev"
     description:
